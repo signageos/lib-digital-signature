@@ -9,7 +9,7 @@
   },
   "signatureParams": [
     "content-digest",
-    "x-ebay-signature-key",
+    "x-sos-signature-key",
     "@method",
     "@path",
     "@authority"

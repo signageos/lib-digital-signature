@@ -26,7 +26,7 @@ import express, { Request, Response } from 'express';
 import * as DigitalSignatureSDK from '../src/index';
 import { needsContentDigestValidation } from '../src/helpers/common';
 
-const SIGNATURE_KEY = 'x-ebay-signature-key';
+const SIGNATURE_KEY = 'x-sos-signature-key';
 
 const config: DigitalSignatureSDK.Config = require('./example-config.json');
 const configFull: DigitalSignatureSDK.Config = require('./example-config-full.json');

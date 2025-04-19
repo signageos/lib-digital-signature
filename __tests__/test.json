@@ -1,6 +1,6 @@
 {
   "ED25519_SIGN": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "privateKey": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIJ+DYvh6SEqVTm50DFtMDoQikTmiCqirVv9mWG9qfSnF\n-----END PRIVATE KEY-----",
     "jwe": "eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJvSzFwdXJNVHQtci14VUwzIiwidGFnIjoiTjB4WjI4ZklZckFmYkd5UWFrTnpjZyJ9.AYdKU7ObIc7Z764OrlKpwUViK8Rphxl0xMP9v2_o9mI.1DbZiSQNRK6pLeIw.Yzp3IDV8RM_h_lMAnwGpMA4DXbaDdmqAh-65kO9xyDgzHD6s0kY3p-yO6oPR9kEcAbjGXIULeQKWVYzbfHKwXTY09Npj_mNuO5yxgZtWnL55uIgP2HL1So2dKkZRK0eyPa6DEXJT71lPtwZtpIGyq9R5h6s3kGMbqA.m4t_MX4VnlXJGx1X_zZ-KQ",
@@ -11,14 +11,14 @@
     },
     "signatureParams": [
       "content-digest",
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
     ]
   },
   "ED25519": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
@@ -42,14 +42,14 @@
     },
     "signatureParams": [
       "content-digest",
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
     ]
   },
   "ED25519_GET": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
@@ -72,14 +72,14 @@
       "requestTarget": ""
     },
     "signatureParams": [
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
     ]
   },
   "ED25519_CONFIG_KEYS": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
@@ -103,14 +103,14 @@
     },
     "signatureParams": [
       "content-digest",
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
     ]
   },
   "RSA": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
@@ -119,7 +119,7 @@
     },
     "jwtExpiration": 3,
     "jwtPayload": {
-      "pkey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4tmm3r20Wd/PbqvP1s2+QEtvpuRaV8Yq40gjUR8y2Rjxa6dpG2GXHbPfvMs8ct+Lh1GH45x28Rw3Ry53mm+oAXjyQ86OnDkZ5N8lYbggD4O3w6M6pAvLkhk95AndTrifbIFPNU8PPMO7OyrFAHqgDsznjPFmTOtCEcN2Z1FpWgchwuYLPL+Wokqltd11nqqzi+bJ9cvSKADYdUAAN5WUtzdpiy6LbTgSxP7ociU4Tn0g5I6aDZJ7A8Lzo0KSyZYoA485mqcO0GVAdVw9lq4aOT9v6d+nb4bnNkQVklLQ3fVAvJm+xdDOp9LCNCN48V2pnDOkFV6+U9nV5oyc6XI2wIDAQAB"
+      "pkey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqgOUnCUyXl8Xe3NDFUT6tl+xXZhkHwmOJmnU6Zsi6YGEdvsJXs6mYaceq5A8l9xDJ+W8O913BOYsdPCXp+rXz7xGIeyMoUqnrVGmOz+Q6piDZNv6q4QgS+O+dzqWeMYbzP8OlDtysLE3g+Z4lLMi86e691VYdsD7hn+DS3M4JwSku8O6KhlMtEIZcY/NT5qrj2aRkRVU/2b9+G3OmvEoyFSYHOXFMEkoNByBVksuVpxCsHLI1C8p6zVXPE+UsdXE6NTS2zHs+YNbRsLnuGB0/gn3vRSlsXSCNHwRkcbN9bIa16UnGjZUtnxd4Fd248+rPGBQZb5V/8ah4t5mDvBCCQIDAQAB"
     },
     "masterKey": "./examples/keys/masterkey.key",
     "privateKey": "./examples/keys/rsa/privatekey.pem",
@@ -134,14 +134,14 @@
     },
     "signatureParams": [
       "content-digest",
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
     ]
   },
   "RSA_GET": {
-    "signatureKeyHeader": "x-ebay-signature-key",
+    "signatureKeyHeader": "x-sos-signature-key",
     "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
@@ -150,7 +150,7 @@
     },
     "jwtExpiration": 3,
     "jwtPayload": {
-      "pkey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4tmm3r20Wd/PbqvP1s2+QEtvpuRaV8Yq40gjUR8y2Rjxa6dpG2GXHbPfvMs8ct+Lh1GH45x28Rw3Ry53mm+oAXjyQ86OnDkZ5N8lYbggD4O3w6M6pAvLkhk95AndTrifbIFPNU8PPMO7OyrFAHqgDsznjPFmTOtCEcN2Z1FpWgchwuYLPL+Wokqltd11nqqzi+bJ9cvSKADYdUAAN5WUtzdpiy6LbTgSxP7ociU4Tn0g5I6aDZJ7A8Lzo0KSyZYoA485mqcO0GVAdVw9lq4aOT9v6d+nb4bnNkQVklLQ3fVAvJm+xdDOp9LCNCN48V2pnDOkFV6+U9nV5oyc6XI2wIDAQAB"
+      "pkey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqgOUnCUyXl8Xe3NDFUT6tl+xXZhkHwmOJmnU6Zsi6YGEdvsJXs6mYaceq5A8l9xDJ+W8O913BOYsdPCXp+rXz7xGIeyMoUqnrVGmOz+Q6piDZNv6q4QgS+O+dzqWeMYbzP8OlDtysLE3g+Z4lLMi86e691VYdsD7hn+DS3M4JwSku8O6KhlMtEIZcY/NT5qrj2aRkRVU/2b9+G3OmvEoyFSYHOXFMEkoNByBVksuVpxCsHLI1C8p6zVXPE+UsdXE6NTS2zHs+YNbRsLnuGB0/gn3vRSlsXSCNHwRkcbN9bIa16UnGjZUtnxd4Fd248+rPGBQZb5V/8ah4t5mDvBCCQIDAQAB"
     },
     "masterKey": "./examples/keys/masterkey.key",
     "privateKey": "./examples/keys/rsa/privatekey.pem",
@@ -164,7 +164,7 @@
       "requestTarget": ""
     },
     "signatureParams": [
-      "x-ebay-signature-key",
+      "x-sos-signature-key",
       "@method",
       "@path",
       "@authority"
