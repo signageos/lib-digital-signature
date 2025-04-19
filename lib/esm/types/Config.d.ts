@@ -10,4 +10,6 @@ export interface Config {
     publicKey: string;
     signatureComponents: SignatureComponents;
     signatureParams: Array<string>;
+    /** The name of the HTTP header used to carry the signature key (JWE). */
+    signatureKeyHeader: string;
 }

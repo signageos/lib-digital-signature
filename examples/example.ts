@@ -26,6 +26,8 @@ import express, { Request, Response } from 'express';
 import * as DigitalSignatureSDK from '../src/index';
 import { needsContentDigestValidation } from '../src/helpers/common';
 
+const SIGNATURE_KEY = 'x-ebay-signature-key';
+
 const config: DigitalSignatureSDK.Config = require('./example-config.json');
 const configFull: DigitalSignatureSDK.Config = require('./example-config-full.json');
 
@@ -73,7 +75,7 @@ app.post('/sign', async (req: Request, res: Response) => {
         generatedHeaders[constants.HEADERS.SIGNATURE_INPUT] = signatureInput
 
         const signatureKey = await DigitalSignatureSDK.generateSignatureKey(configFull);
-        generatedHeaders[constants.HEADERS.SIGNATURE_KEY] = signatureKey
+        generatedHeaders[SIGNATURE_KEY] = signatureKey
 
         const signature = DigitalSignatureSDK.generateSignature(generatedHeaders, configFull);
         generatedHeaders[constants.HEADERS.SIGNATURE] = signature

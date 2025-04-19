@@ -7,7 +7,6 @@ export declare const constants: {
         readonly APPLICATION_JSON: "application/json";
         readonly CONTENT_DIGEST: "content-digest";
         readonly SIGNATURE_INPUT: "signature-input";
-        readonly SIGNATURE_KEY: "x-ebay-signature-key";
         readonly SIGNATURE: "signature";
     };
     readonly HTTP_STATUS_CODE: {

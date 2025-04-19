@@ -25,7 +25,8 @@ import {
     generateSignature,
     generateSignatureInput,
     generateSignatureKey,
-    validateSignatureHeader
+    validateSignatureHeader,
+    getSignatureKeyHeader
 } from './helpers/signature-helper';
 import { Config } from './types/Config';
 
@@ -39,6 +40,7 @@ import { Config } from './types/Config';
 async function signMessage(request: Request, response: Response, config: Config): Promise<void> {
     try {
         const generatedHeaders: any = {};
+        const signatureKeyHeader = getSignatureKeyHeader(config); // Get the header name
 
         if (needsContentDigestValidation(request.body)) {
             const contentDigest = generateDigestHeader(
@@ -59,8 +61,8 @@ async function signMessage(request: Request, response: Response, config: Config)
             signatureKey = await generateSignatureKey(config);
         }
 
-        response.setHeader(constants.HEADERS.SIGNATURE_KEY, signatureKey);
-        generatedHeaders[constants.HEADERS.SIGNATURE_KEY] = signatureKey
+        response.setHeader(signatureKeyHeader, signatureKey); // Use the dynamic header name
+        generatedHeaders[signatureKeyHeader] = signatureKey // Use the dynamic header name
 
         const signature = generateSignature(
             generatedHeaders,
