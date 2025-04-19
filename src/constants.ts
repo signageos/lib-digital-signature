@@ -43,5 +43,4 @@ export const constants = {
     SHA_512: 'sha512',
     SIGNATURE_PREFIX: 'sig1=:',
     UTF8: 'utf8',
-    X_EBAY_SIGNATURE: 'x-ebay-signature'
 } as const;

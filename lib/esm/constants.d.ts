@@ -23,5 +23,4 @@ export declare const constants: {
     readonly SHA_512: "sha512";
     readonly SIGNATURE_PREFIX: "sig1=:";
     readonly UTF8: "utf8";
-    readonly X_EBAY_SIGNATURE: "x-ebay-signature";
 };
