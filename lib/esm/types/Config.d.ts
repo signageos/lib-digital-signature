@@ -1,6 +1,7 @@
+import { CryptoAlgorithm } from "../helpers/digest-helper";
 import { SignatureComponents } from "./SignatureComponents";
 export interface Config {
-    digestAlgorithm: string;
+    digestAlgorithm: CryptoAlgorithm;
     jwe: string;
     jwtExpiration: number;
     jweHeaderParams: object;

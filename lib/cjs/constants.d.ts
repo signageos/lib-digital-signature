@@ -3,6 +3,7 @@ export declare const constants: {
     readonly COLON: ":";
     readonly CONTENT_DIGEST_SHA256: "sha-256=:";
     readonly CONTENT_DIGEST_SHA512: "sha-512=:";
+    readonly CONTENT_DIGEST_MD5: "md5=:";
     readonly HEADERS: {
         readonly APPLICATION_JSON: "application/json";
         readonly CONTENT_DIGEST: "content-digest";
@@ -21,6 +22,7 @@ export declare const constants: {
     readonly KEY_START: "-----BEGIN PUBLIC KEY-----\n";
     readonly SHA_256: "sha256";
     readonly SHA_512: "sha512";
+    readonly MD5: "md5";
     readonly SIGNATURE_PREFIX: "sig1=:";
     readonly UTF8: "utf8";
 };

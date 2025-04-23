@@ -1,7 +1,6 @@
 {
   "ED25519_SIGN": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "privateKey": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIJ+DYvh6SEqVTm50DFtMDoQikTmiCqirVv9mWG9qfSnF\n-----END PRIVATE KEY-----",
     "jwe": "eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJvSzFwdXJNVHQtci14VUwzIiwidGFnIjoiTjB4WjI4ZklZckFmYkd5UWFrTnpjZyJ9.AYdKU7ObIc7Z764OrlKpwUViK8Rphxl0xMP9v2_o9mI.1DbZiSQNRK6pLeIw.Yzp3IDV8RM_h_lMAnwGpMA4DXbaDdmqAh-65kO9xyDgzHD6s0kY3p-yO6oPR9kEcAbjGXIULeQKWVYzbfHKwXTY09Npj_mNuO5yxgZtWnL55uIgP2HL1So2dKkZRK0eyPa6DEXJT71lPtwZtpIGyq9R5h6s3kGMbqA.m4t_MX4VnlXJGx1X_zZ-KQ",
     "signatureComponents": {
@@ -19,7 +18,6 @@
   },
   "ED25519": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
       "enc": "A256GCM",
@@ -50,7 +48,6 @@
   },
   "ED25519_GET": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
       "enc": "A256GCM",
@@ -80,7 +77,6 @@
   },
   "ED25519_CONFIG_KEYS": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
       "enc": "A256GCM",
@@ -111,7 +107,6 @@
   },
   "RSA": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
       "enc": "A256GCM",
@@ -142,7 +137,6 @@
   },
   "RSA_GET": {
     "signatureKeyHeader": "x-sos-signature-key",
-    "digestAlgorithm": "sha256",
     "jweHeaderParams": {
       "alg": "A256GCMKW",
       "enc": "A256GCM",

@@ -19,7 +19,7 @@
 'use strict';
 import { constants } from './constants';
 import { Request, Response } from 'express';
-import { generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
+import { CryptoAlgorithm, generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
 import { needsContentDigestValidation } from './helpers/common';
 import {
     generateSignature,

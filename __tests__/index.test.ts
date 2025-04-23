@@ -53,9 +53,35 @@ describe('test Signature SDK', () => {
 
             expect(actual).toBe(expected);
         });
+
+        test("should be able to generate for MD5 cipher", () => {
+            const request: string = '{"hello": "world"}';
+            const requestBuffer: Buffer = Buffer.from(request);
+            const expected: string = `md5=:Sd/dVLAcvNLSq16eXua5uQ==:`;
+
+            const actual = DigitalSignatureSDK.generateDigestHeader(
+                requestBuffer, constants.MD5);
+
+            expect(actual).toBe(expected);
+        });
     });
 
-    describe('ED25519', () => {
+    const testCases = [
+        {
+            digestAlgorithm: 'sha256',
+            digestAlgo: 'sha-256',
+            testDigest: 'X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=',
+            expectedSignature: 'dzURGVP+qnm4HSWpkJY7xbYUCulHp4yD724NI12CJtUDcp6z3z2YRKvsbH/ypw1u/e4DRE39OPhlzCn0TCWuAg==',
+        },
+        {
+            digestAlgorithm: 'md5',
+            digestAlgo: 'md5',
+            testDigest: 'Sd/dVLAcvNLSq16eXua5uQ==',
+            expectedSignature: 'SQLay/Qy9QqiExbSY9Qtjj37H6T7hlf+Xf9Q8oIk0z+sDYCnQwed8mB9uKq1AXDkJd3AJhtjq6l9HO2ZvgqGAA==',
+        },
+    ];
+
+    testCases.forEach(({ digestAlgorithm, digestAlgo, testDigest, expectedSignature }) => describe(`ED25519 - ${digestAlgorithm}`, () => {
         test("should be able to generate 'signature-input' header when request has payload", () => {
             const config: DigitalSignatureSDK.Config = testData.ED25519;
             const expected: string = `sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378`;
@@ -76,10 +102,10 @@ describe('test Signature SDK', () => {
 
         test("should be able to generate 'Signature' header", () => {
             const config: DigitalSignatureSDK.Config = testData.ED25519;
-            const expected = 'sig1=:dzURGVP+qnm4HSWpkJY7xbYUCulHp4yD724NI12CJtUDcp6z3z2YRKvsbH/ypw1u/e4DRE39OPhlzCn0TCWuAg==:';
+            const expected = 'sig1=:' + expectedSignature + ':';
 
             const actual = DigitalSignatureSDK.generateSignature({
-                'content-digest': 'sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:',
+                'content-digest': digestAlgo + '=:' + testDigest + ':',
                 'signature-input': 'sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378',
                 'x-sos-signature-key': 'eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJvSzFwdXJNVHQtci14VUwzIiwidGFnIjoiTjB4WjI4ZklZckFmYkd5UWFrTnpjZyJ9.AYdKU7ObIc7Z764OrlKpwUViK8Rphxl0xMP9v2_o9mI.1DbZiSQNRK6pLeIw.Yzp3IDV8RM_h_lMAnwGpMA4DXbaDdmqAh-65kO9xyDgzHD6s0kY3p-yO6oPR9kEcAbjGXIULeQKWVYzbfHKwXTY09Npj_mNuO5yxgZtWnL55uIgP2HL1So2dKkZRK0eyPa6DEXJT71lPtwZtpIGyq9R5h6s3kGMbqA.m4t_MX4VnlXJGx1X_zZ-KQ'
             }, config);
@@ -89,10 +115,10 @@ describe('test Signature SDK', () => {
 
         test("should be able to generate 'Signature' header with given JWE", () => {
             const config: DigitalSignatureSDK.Config = testData.ED25519_SIGN;
-            const expected = 'sig1=:dzURGVP+qnm4HSWpkJY7xbYUCulHp4yD724NI12CJtUDcp6z3z2YRKvsbH/ypw1u/e4DRE39OPhlzCn0TCWuAg==:';
+            const expected = 'sig1=:' + expectedSignature + ':';
 
             const actual = DigitalSignatureSDK.generateSignature({
-                'content-digest': 'sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:',
+                'content-digest': digestAlgo + '=:' + testDigest + ':',
                 'signature-input': 'sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378',
                 'x-sos-signature-key': 'eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJvSzFwdXJNVHQtci14VUwzIiwidGFnIjoiTjB4WjI4ZklZckFmYkd5UWFrTnpjZyJ9.AYdKU7ObIc7Z764OrlKpwUViK8Rphxl0xMP9v2_o9mI.1DbZiSQNRK6pLeIw.Yzp3IDV8RM_h_lMAnwGpMA4DXbaDdmqAh-65kO9xyDgzHD6s0kY3p-yO6oPR9kEcAbjGXIULeQKWVYzbfHKwXTY09Npj_mNuO5yxgZtWnL55uIgP2HL1So2dKkZRK0eyPa6DEXJT71lPtwZtpIGyq9R5h6s3kGMbqA.m4t_MX4VnlXJGx1X_zZ-KQ'
             }, config);
@@ -131,10 +157,10 @@ describe('test Signature SDK', () => {
                 setHeader: jest.fn(),
             } as unknown as Response;
 
-            await DigitalSignatureSDK.signMessage(mockedRequest, mockedResponse, testData.ED25519);
+            await DigitalSignatureSDK.signMessage(mockedRequest, mockedResponse, { ...testData.ED25519, digestAlgorithm });
 
             const signatureSpy = jest.spyOn(mockedResponse, 'setHeader');
-            expect(signatureSpy).toHaveBeenCalledWith("content-digest", "sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:");
+            expect(signatureSpy).toHaveBeenCalledWith("content-digest", digestAlgo + "=:" + testDigest + ":");
             expect(signatureSpy).toHaveBeenCalledWith("signature-input", "sig1=(\"content-digest\" \"x-sos-signature-key\" \"@method\" \"@path\" \"@authority\");created=1663459378");
             expect(signatureSpy).toHaveBeenCalledWith('signature', expect.any(String));
             expect(signatureSpy).toHaveBeenCalledWith('x-sos-signature-key', expect.any(String));
@@ -149,17 +175,17 @@ describe('test Signature SDK', () => {
                     'host': 'localhost:8080',
                     'url': '/test',
                     'content-type': 'application/json',
-                    'content-digest': 'sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:',
-                    'signature-input': 'sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663544232',
-                    'x-sos-signature-key': 'eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJqMDdkYy15U3RGTUdOUGpEIiwidGFnIjoiaFdtYW1vSzFveW5uNXJzQXBkWEZjZyJ9.IJCvc284w_hKPvOKnWOAFnFHmLrp3V-Av3H_m4IbDHw.9kIqPr4zrS7NxDAU.7wh7lhxBFGdkpol3WL9biXWKhtnilkUlSf5lRq2leEwYCJHnShHbwLHuKBkAMs-vzIO8zMEyaim54MCr8-b4I8LRE_8XLmf_Qd4Ir-D-5tIC9DUczGeLMNC_3HCpUXvWM4_gQtMQIqSvEbRrEfw8LJL5w3rYkuzLdA.1ilezim-wzrwYnB8XEJmXA',
-                    'signature': 'sig1=:CANWef8uilGi6vnqEzaGamfmxT7zsMpsCGOeze59/5+x4p2WV+RhCMXuRftZaAggaOoXNiwGau+daC3L823XAA==:'
+                    'content-digest': digestAlgo + '=:' + testDigest + ':',
+                    'signature-input': 'sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378',
+                    'x-sos-signature-key': 'eyJhbGciOiJBMjU2R0NNS1ciLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIiwiaXYiOiJvSzFwdXJNVHQtci14VUwzIiwidGFnIjoiTjB4WjI4ZklZckFmYkd5UWFrTnpjZyJ9.AYdKU7ObIc7Z764OrlKpwUViK8Rphxl0xMP9v2_o9mI.1DbZiSQNRK6pLeIw.Yzp3IDV8RM_h_lMAnwGpMA4DXbaDdmqAh-65kO9xyDgzHD6s0kY3p-yO6oPR9kEcAbjGXIULeQKWVYzbfHKwXTY09Npj_mNuO5yxgZtWnL55uIgP2HL1So2dKkZRK0eyPa6DEXJT71lPtwZtpIGyq9R5h6s3kGMbqA.m4t_MX4VnlXJGx1X_zZ-KQ',
+                    'signature': 'sig1=:' + expectedSignature + ':'
                 },
                 body: payloadBuffer
             } as unknown as Request;
 
             const actual: boolean = await DigitalSignatureSDK.validateSignature(
                 request,
-                testData.ED25519
+                { ...testData.ED25519, digestAlgorithm }
             );
 
             expect(actual).toBeTruthy();
@@ -168,7 +194,7 @@ describe('test Signature SDK', () => {
         test("should generate a valid signature", async () => {
             const payload: string = '{"hello": "world"}';
             const payloadBuffer: Buffer = Buffer.from(payload);
-            const config: DigitalSignatureSDK.Config = testData.ED25519;
+            const config: DigitalSignatureSDK.Config = { ...testData.ED25519, digestAlgorithm };
             const contentDigest = DigitalSignatureSDK.generateDigestHeader(
                 payloadBuffer,
                 config.digestAlgorithm
@@ -244,7 +270,7 @@ describe('test Signature SDK', () => {
         test("should work when keys are provided in the config", async () => {
             const payload: string = '{"hello": "world"}';
             const payloadBuffer: Buffer = Buffer.from(payload);
-            const config: DigitalSignatureSDK.Config = testData.ED25519_CONFIG_KEYS;
+            const config: DigitalSignatureSDK.Config = { ...testData.ED25519_CONFIG_KEYS, digestAlgorithm: 'sha256' };
             const contentDigest = DigitalSignatureSDK.generateDigestHeader(
                 payloadBuffer,
                 config.digestAlgorithm
@@ -282,7 +308,7 @@ describe('test Signature SDK', () => {
 
             expect(actual).toBeTruthy();
         });
-    });
+    }));
 
     describe('RSA', () => {
         test("should be able to validate request signature", async () => {
@@ -313,7 +339,7 @@ describe('test Signature SDK', () => {
         test("should generate a valid signature", async () => {
             const payload: string = '{"hello": "world"}';
             const payloadBuffer: Buffer = Buffer.from(payload);
-            const config: DigitalSignatureSDK.Config = testData.RSA;
+            const config: DigitalSignatureSDK.Config = { ...testData.RSA, digestAlgorithm: 'sha256' };
             const contentDigest = DigitalSignatureSDK.generateDigestHeader(
                 payloadBuffer,
                 config.digestAlgorithm

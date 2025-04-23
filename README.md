@@ -109,7 +109,7 @@ For both signing and signature validation, use [example-config-full.json](exampl
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `digestAlgorithm` | string | The algorithm for generating the Content-Digest header. Supported vales are `sha256` and `sha512` |
+| `digestAlgorithm` | string | The algorithm for generating the Content-Digest header. Supported values are `sha256`, `sha512` and `md5` |
 | `jwe` | string | The JWE generated using the [Key Management API](https://developer.ebay.com/api-docs/developer/key-management/overview.html)|
 | `jweHeaderParams` | JSON object | The JWE header params. This is required only if a JWE is not provided in the config. |
 | `jwtExpiration` | number | The JWT expiration in years. This is required only if a JWE is not provided in the config. |

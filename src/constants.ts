@@ -23,6 +23,7 @@ export const constants = {
     COLON: ':',
     CONTENT_DIGEST_SHA256: 'sha-256=:',
     CONTENT_DIGEST_SHA512: 'sha-512=:',
+    CONTENT_DIGEST_MD5: 'md5=:',
     HEADERS: {
         APPLICATION_JSON: 'application/json',
         CONTENT_DIGEST: 'content-digest',
@@ -41,6 +42,7 @@ export const constants = {
     KEY_START: '-----BEGIN PUBLIC KEY-----\n',
     SHA_256: 'sha256',
     SHA_512: 'sha512',
+    MD5: 'md5',
     SIGNATURE_PREFIX: 'sig1=:',
     UTF8: 'utf8',
 } as const;
