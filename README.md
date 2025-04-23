@@ -1,5 +1,5 @@
-<a href="https://npmjs.org/package/digital-signature-nodejs-sdk">
-    <img src="https://img.shields.io/npm/v/digital-signature-nodejs-sdk.svg" alt="NPM Version"/>
+<a href="https://www.npmjs.com/package/@signageos/digital-signature">
+    <img src="https://img.shields.io/npm/v/@signageos/digital-signature.svg" alt="NPM Version"/>
 </a>
 
 # Digital Signature SDK
@@ -63,13 +63,13 @@ NPM: v7 or higher
 Using npm:
 
 ```shell
-npm install digital-signature-nodejs-sdk
+npm install @signageos/digital-signature
 ```
 
 Using yarn:
 
 ```shell
-yarn add digital-signature-nodejs-sdk
+yarn add @signageos/digital-signature
 ```
 
 ### Configure
@@ -104,6 +104,12 @@ For both signing and signature validation, use [example-config-full.json](exampl
 
 ```
 
+### Publish NPM package
+
+```bash
+# Update package.json version property to describe your changes
+npm publish --access=public
+```
 
 ### Parameters
 
