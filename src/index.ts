@@ -88,7 +88,7 @@ async function validateSignature(request: Request, config: Config): Promise<bool
     } catch (e) {
         // eslint-disable-next-line no-console
         console.error(e);
-        response = e.message;
+        response = false;
     }
 
     return response;
