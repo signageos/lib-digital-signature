@@ -5,7 +5,7 @@ import { constants } from '../constants';
 import { decryptJWE, encryptJWE } from './jwe-helper';
 import { generateBase, calculateBase, getUnixTimestamp } from './signature-base-helper';
 import { Config } from '..';
-import { readKey } from './common';
+import { readKey, sanitizeKey } from './common';
 
 // Helper function to get the signature key header name
 const getSignatureKeyHeader = (config: Config): string => config.signatureKeyHeader;
@@ -132,6 +132,14 @@ async function validateSignatureHeader(
 
     // Verify JWT
     const publicKey: any = await validateSignatureKey(signatureKey, config);
+    if (config.publicKey) {
+        const expectedPublicKey = sanitizeKey(readKey(config.publicKey));
+        const sanitizedPublicKey = sanitizeKey(publicKey);
+        if (expectedPublicKey !== sanitizedPublicKey) {
+            throw new Error("Public key mismatch");
+        }
+    }
+
     const baseString: string = calculateBase(headers, config);
 
     // If algorithm is undefined, then it is dependent upon the public key type.

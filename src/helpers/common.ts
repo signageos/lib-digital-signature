@@ -22,4 +22,8 @@ function readKey(value: string): string {
     return key;
 }
 
-export { needsContentDigestValidation, readKey };
+function sanitizeKey(key: string): string {
+    return key.trim().replace(/[\r\n]+/g, '');
+}
+
+export { needsContentDigestValidation, readKey, sanitizeKey };
