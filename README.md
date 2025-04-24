@@ -4,6 +4,8 @@
 
 # Digital Signature SDK
 
+> **Note:** This repository is a fork. The upstream repository can be found at [eBay/digital-signature-nodejs-sdk](https://github.com/eBay/digital-signature-nodejs-sdk).
+
 HTTP message signatures provide a mechanism for end-to-end authenticity and integrity for components of an HTTP message.
 
 This NodeJS SDK is designed to simplify the process of generating digital signature headers and also provides a method to validate the digital signature headers.
