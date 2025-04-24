@@ -14,15 +14,15 @@
   "publicKey": "./examples/keys/ed25519/publickey.pem",
   "signatureComponents": {
     "method": "POST",
-    "authority": "api.sandbox.ebay.com",
-    "path": "/ws/api.dll",
-    "targetUri": "https://api.sandbox.ebay.com/ws/api.dll",
+    "authority": "example.com",
+    "path": "/image.png",
+    "targetUri": "https://example.com/image.png",
     "scheme": "https",
     "requestTarget": ""
   },
   "signatureParams": [
     "content-digest",
-    "x-ebay-signature-key",
+    "x-sos-signature-key",
     "@method",
     "@path",
     "@authority"

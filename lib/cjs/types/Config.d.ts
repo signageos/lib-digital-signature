@@ -1,6 +1,7 @@
+import { CryptoAlgorithm } from "../helpers/digest-helper";
 import { SignatureComponents } from "./SignatureComponents";
 export interface Config {
-    digestAlgorithm: string;
+    digestAlgorithm: CryptoAlgorithm;
     jwe: string;
     jwtExpiration: number;
     jweHeaderParams: object;
@@ -10,4 +11,6 @@ export interface Config {
     publicKey: string;
     signatureComponents: SignatureComponents;
     signatureParams: Array<string>;
+    /** The name of the HTTP header used to carry the signature key (JWE). */
+    signatureKeyHeader: string;
 }

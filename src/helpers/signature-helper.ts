@@ -1,21 +1,3 @@
-/*
- * *
- *  * Copyright 2022 eBay Inc.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *
- */
-
 'use strict';
 
 import crypto from 'crypto';
@@ -23,10 +5,13 @@ import { constants } from '../constants';
 import { decryptJWE, encryptJWE } from './jwe-helper';
 import { generateBase, calculateBase, getUnixTimestamp } from './signature-base-helper';
 import { Config } from '..';
-import { readKey } from './common';
+import { readKey, sanitizeKey } from './common';
+
+// Helper function to get the signature key header name
+const getSignatureKeyHeader = (config: Config): string => config.signatureKeyHeader;
 
 /**
- * Generates the x-ebay-signature-key header value for the input payload.
+ * Generates the signature key header (config.signatureKeyHeader) value for the input payload.
  * 
  * @param {Config} config The input config.
  * @returns <Promise<string> The signature key value.
@@ -88,9 +73,9 @@ function generateSignature(
 };
 
 /**
- * Validates the input signature key (x-ebay-signature-key header value).
+ * Validates the input signature key (header value).
  * 
- * @param {string} signatureKey the x-ebay-signature-key header value.
+ * @param {string} signatureKey the signature key header value.
  * @param {Config} config The input config.
  * @returns Promise<string> the public key (pkey) value from JWT claims set.
  * @throws {Error} if the header generation fails.
@@ -99,10 +84,11 @@ function validateSignatureKey(
     signatureKey: string,
     config: Config
 ): Promise<string | undefined> {
+    const signatureKeyHeader = getSignatureKeyHeader(config);
     try {
         return decryptJWE(signatureKey, config);
     } catch (e) {
-        throw new Error(`Error parsing JWE from x-ebay-signature-key header: ${e.message}`);
+        throw new Error(`Error parsing JWE from ${signatureKeyHeader} header: ${e.message}`);
     };
 }
 
@@ -118,15 +104,16 @@ async function validateSignatureHeader(
     headers: any,
     config: Config
 ): Promise<boolean> {
+    const signatureKeyHeader = getSignatureKeyHeader(config);
     const signature = headers[
         constants.HEADERS.SIGNATURE
     ] as string;
     const signatureKey: string = headers[
-        constants.HEADERS.SIGNATURE_KEY
+        signatureKeyHeader
     ] as string;
 
     if (!signatureKey) {
-        throw new Error(`${constants.HEADERS.SIGNATURE_KEY} header missing`);
+        throw new Error(`${signatureKeyHeader} header missing`);
     }
 
     if (!signature) {
@@ -145,6 +132,14 @@ async function validateSignatureHeader(
 
     // Verify JWT
     const publicKey: any = await validateSignatureKey(signatureKey, config);
+    if (config.publicKey) {
+        const expectedPublicKey = sanitizeKey(readKey(config.publicKey));
+        const sanitizedPublicKey = sanitizeKey(publicKey);
+        if (expectedPublicKey !== sanitizedPublicKey) {
+            throw new Error("Public key mismatch");
+        }
+    }
+
     const baseString: string = calculateBase(headers, config);
 
     // If algorithm is undefined, then it is dependent upon the public key type.
@@ -163,5 +158,6 @@ export {
     generateSignatureInput,
     generateSignatureKey,
     validateSignatureKey,
-    validateSignatureHeader
+    validateSignatureHeader,
+    getSignatureKeyHeader
 };

@@ -1,31 +1,14 @@
-/*
- * *
- *  * Copyright 2022 eBay Inc.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *
- */
-
 'use strict';
 import { constants } from './constants';
 import { Request, Response } from 'express';
-import { generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
+import { CryptoAlgorithm, generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
 import { needsContentDigestValidation } from './helpers/common';
 import {
     generateSignature,
     generateSignatureInput,
     generateSignatureKey,
-    validateSignatureHeader
+    validateSignatureHeader,
+    getSignatureKeyHeader
 } from './helpers/signature-helper';
 import { Config } from './types/Config';
 
@@ -39,6 +22,7 @@ import { Config } from './types/Config';
 async function signMessage(request: Request, response: Response, config: Config): Promise<void> {
     try {
         const generatedHeaders: any = {};
+        const signatureKeyHeader = getSignatureKeyHeader(config); // Get the header name
 
         if (needsContentDigestValidation(request.body)) {
             const contentDigest = generateDigestHeader(
@@ -59,8 +43,8 @@ async function signMessage(request: Request, response: Response, config: Config)
             signatureKey = await generateSignatureKey(config);
         }
 
-        response.setHeader(constants.HEADERS.SIGNATURE_KEY, signatureKey);
-        generatedHeaders[constants.HEADERS.SIGNATURE_KEY] = signatureKey
+        response.setHeader(signatureKeyHeader, signatureKey); // Use the dynamic header name
+        generatedHeaders[signatureKeyHeader] = signatureKey // Use the dynamic header name
 
         const signature = generateSignature(
             generatedHeaders,
@@ -104,7 +88,7 @@ async function validateSignature(request: Request, config: Config): Promise<bool
     } catch (e) {
         // eslint-disable-next-line no-console
         console.error(e);
-        response = e.message;
+        response = false;
     }
 
     return response;

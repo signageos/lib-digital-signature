@@ -1,6 +1,6 @@
 {
-  "name": "digital-signature-nodejs-sdk",
-  "version": "3.0.1",
+  "name": "@signageos/digital-signature",
+  "version": "3.1.2",
   "description": "NodeJS SDK to generate and validate digital signatures",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -17,7 +17,7 @@
     "test"
   ],
   "keywords": [
-    "eBay",
+    "signageOS",
     "Digital Signature",
     "ED25519",
     "RSA"
@@ -50,12 +50,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/eBay/digital-signature-nodejs-sdk.git"
+    "url": "https://github.com/signageos/lib-digital-signature"
   },
   "bugs": {
-    "url": "https://github.com/eBay/digital-signature-nodejs-sdk/issues"
+    "url": "https://github.com/signageos/lib-digital-signature/issues"
   },
-  "homepage": "https://github.com/eBay/digital-signature-nodejs-sdk#readme",
+  "homepage": "https://github.com/signageos/lib-digital-signature#readme",
   "engines": {
     "node": ">=16.0.0"
   }

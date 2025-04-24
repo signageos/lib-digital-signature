@@ -1,6 +1,7 @@
 import { Config } from '..';
+declare const getSignatureKeyHeader: (config: Config) => string;
 /**
- * Generates the x-ebay-signature-key header value for the input payload.
+ * Generates the signature key header (config.signatureKeyHeader) value for the input payload.
  *
  * @param {Config} config The input config.
  * @returns <Promise<string> The signature key value.
@@ -23,9 +24,9 @@ declare function generateSignatureInput(headers: any, config: Config): string;
  */
 declare function generateSignature(headers: any, config: Config): string;
 /**
- * Validates the input signature key (x-ebay-signature-key header value).
+ * Validates the input signature key (header value).
  *
- * @param {string} signatureKey the x-ebay-signature-key header value.
+ * @param {string} signatureKey the signature key header value.
  * @param {Config} config The input config.
  * @returns Promise<string> the public key (pkey) value from JWT claims set.
  * @throws {Error} if the header generation fails.
@@ -40,4 +41,4 @@ declare function validateSignatureKey(signatureKey: string, config: Config): Pro
  * @throws Error if the Signature value is invalid.
  */
 declare function validateSignatureHeader(headers: any, config: Config): Promise<boolean>;
-export { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureKey, validateSignatureHeader };
+export { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureKey, validateSignatureHeader, getSignatureKeyHeader };
