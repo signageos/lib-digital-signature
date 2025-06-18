@@ -110,7 +110,7 @@ function calculateBase(headers: any, config: Config): string {
             throw new Error("Invalid Signature-Input. Make sure it's of format: .+=\\(.+\\;created=\\d+)");
         }
 
-        const signatureInput: string = signatureInputParts[2].replaceAll("\"", "");
+        const signatureInput: string = signatureInputParts[2].replace(/"/g, "");
         const signatureParams: string[] = signatureInput.split(" ");
 
         let baseString: string = '';
