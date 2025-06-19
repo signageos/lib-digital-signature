@@ -12,6 +12,7 @@
     "build": "npm run tsc",
     "clean": "rm -rf lib/*",
     "clean-build": "npm run clean && npm run build",
+    "clean-build-public": "npm run clean-build",
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublish": "npm run tsc",
     "test": "jest",
