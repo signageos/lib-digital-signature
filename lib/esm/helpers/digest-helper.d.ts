@@ -13,8 +13,8 @@ declare const cryptoAlgoToDashed: {
  * Values are in the format of algorithm used to calculate the digest (crypto package).
  */
 declare const dashedToCryptoAlgo: {
-    'sha-256': "sha256";
-    'sha-512': "sha512";
+    "sha-256": "sha256";
+    "sha-512": "sha512";
     md5: "md5";
 };
 export type CryptoAlgorithm = keyof typeof cryptoAlgoToDashed;

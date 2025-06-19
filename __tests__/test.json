@@ -68,12 +68,7 @@
       "scheme": "https",
       "requestTarget": ""
     },
-    "signatureParams": [
-      "x-sos-signature-key",
-      "@method",
-      "@path",
-      "@authority"
-    ]
+    "signatureParams": ["x-sos-signature-key", "@method", "@path", "@authority"]
   },
   "ED25519_CONFIG_KEYS": {
     "signatureKeyHeader": "x-sos-signature-key",
@@ -157,11 +152,6 @@
       "scheme": "https",
       "requestTarget": ""
     },
-    "signatureParams": [
-      "x-sos-signature-key",
-      "@method",
-      "@path",
-      "@authority"
-    ]
+    "signatureParams": ["x-sos-signature-key", "@method", "@path", "@authority"]
   }
 }

@@ -1,4 +1,4 @@
-import { Config } from '..';
+import { Config } from "..";
 declare const getSignatureKeyHeader: (config: Config) => string;
 /**
  * Generates the signature key header (config.signatureKeyHeader) value for the input payload.
@@ -41,4 +41,4 @@ declare function validateSignatureKey(signatureKey: string, config: Config): Pro
  * @throws Error if the Signature value is invalid.
  */
 declare function validateSignatureHeader(headers: any, config: Config): Promise<boolean>;
-export { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureKey, validateSignatureHeader, getSignatureKeyHeader };
+export { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureKey, validateSignatureHeader, getSignatureKeyHeader, };

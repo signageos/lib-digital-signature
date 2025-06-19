@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+lib
+coverage
+.git
+.gitignore
+README.md
+.nyc_output
+.coverage_nyc
+.coverage
+dist

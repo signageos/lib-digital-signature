@@ -1,4 +1,4 @@
-import { Config } from '..';
+import { Config } from "..";
 /**
  * Decrypts the input JWE string and returns the 'pkey' value from claims set.
  *

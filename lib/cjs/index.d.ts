@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
-import { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureHeader } from './helpers/signature-helper';
-import { Config } from './types/Config';
+import { Request, Response } from "express";
+import { generateDigestHeader, validateDigestHeader } from "./helpers/digest-helper";
+import { generateSignature, generateSignatureInput, generateSignatureKey, validateSignatureHeader } from "./helpers/signature-helper";
+import { Config } from "./types/Config";
 /**
  * Generate signature headers and add it to the response.
  *
@@ -18,4 +18,4 @@ declare function signMessage(request: Request, response: Response, config: Confi
  * @returns Promise<boolean> True upon successful signature validation.
  * */
 declare function validateSignature(request: Request, config: Config): Promise<boolean>;
-export { generateDigestHeader, generateSignature, generateSignatureInput, generateSignatureKey, signMessage, validateDigestHeader, validateSignature, validateSignatureHeader, Config };
+export { generateDigestHeader, generateSignature, generateSignatureInput, generateSignatureKey, signMessage, validateDigestHeader, validateSignature, validateSignatureHeader, Config, };

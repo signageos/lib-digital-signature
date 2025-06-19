@@ -1,41 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "module": "commonjs",
-        "declaration": true,
-        "outDir": "lib/esm",
-        "rootDir": "src",
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "checkJs": true,
-        "allowJs": true,
-        "moduleResolution": "node",
-        "types": [
-            "@types/jest",
-            "node"
-        ],
-        "lib": [
-            "es6",
-            "dom",
-            "es2021",
-            "ES2021.String"
-        ],
-        "typeRoots": [
-            "node_modules/@types",
-            "src/types"
-        ],
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowUnreachableCode": true,
-        "useUnknownInCatchVariables": false,
-    },
-    "include": [
-        "./src"
-    ],
-    "exclude": [
-        "node_modules",
-        "<node_internals>/**"
-    ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "lib/esm",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "checkJs": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "types": ["@types/jest", "node"],
+    "lib": ["es6", "dom", "es2021", "ES2021.String"],
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowUnreachableCode": true,
+    "useUnknownInCatchVariables": false
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules", "<node_internals>/**"]
 }
