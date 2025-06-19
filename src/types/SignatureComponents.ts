@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 export interface SignatureComponents {
-    authority: string,
-    method: string,
-    path: string,
-    requestTarget: string,
-    scheme: string,
-    targetUri: string
+  authority: string;
+  method: string;
+  path: string;
+  requestTarget: string;
+  scheme: string;
+  targetUri: string;
 }
