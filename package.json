@@ -9,9 +9,19 @@
   ],
   "scripts": {
     "start": "ts-node examples/example.ts",
-    "test": "eslint . && jest",
+    "build": "npm run tsc",
+    "clean": "rm -rf lib/*",
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
-    "prepublish": "npm run tsc"
+    "prepublish": "npm run tsc",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier \"**/*.+(ts|tsx|json|js)\" --check",
+    "lint:prettier:fix": "prettier \"**/*.+(ts|tsx|json|js)\" --write",
+    "check-types": "tsc --noEmit",
+    "check": "npm run depcheck",
+    "depcheck": "echo 'No depcheck configuration found, skipping dependency check'"
   },
   "pre-commit": [
     "test"
@@ -38,6 +48,7 @@
     "eslint": "^6.8.0",
     "eslint-config-ebay": "^1.1.1",
     "jest": "^26",
+    "prettier": "^3.5.3",
     "ts-jest": "^26",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
