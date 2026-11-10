@@ -8,9 +8,21 @@ import * as DigitalSignatureSDK from "../src/index";
 
 const testData = require("./test.json");
 
+// jose checks iat/nbf/exp against `new Date()`, which replacing Date.now does not reach.
+const ED25519_FIXTURE_TIME = 1663459378000;
+const RSA_FIXTURE_TIME = 1664063650000;
+
 describe("test Signature SDK", () => {
   beforeAll(() => {
-    Date.now = jest.fn(() => 1663459378000);
+    jest.useFakeTimers("modern");
+  });
+
+  beforeEach(() => {
+    jest.setSystemTime(ED25519_FIXTURE_TIME);
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   describe("Content-Digest", () => {
@@ -370,6 +382,10 @@ describe("test Signature SDK", () => {
   );
 
   describe("RSA", () => {
+    beforeEach(() => {
+      jest.setSystemTime(RSA_FIXTURE_TIME);
+    });
+
     test("should be able to validate request signature", async () => {
       const payload: string = '{"hello": "world"}';
       const payloadBuffer: Buffer = Buffer.from(payload);
