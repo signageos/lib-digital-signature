@@ -1,6 +1,6 @@
 {
 	"extends": "@istanbuljs/nyc-config-typescript",
-	"check-coverage": false,
+	"check-coverage": true,
 	"all": true,
 	"include": ["src/**/!(*.test.*).[tj]s?(x)"],
 	"exclude": ["test/**/*.*"],

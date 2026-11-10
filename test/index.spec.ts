@@ -6,12 +6,8 @@ import { constants } from '../src/constants';
 import { readKey } from '../src/helpers/common';
 import * as DigitalSignatureSDK from '../src/index';
 import fixtures from './fixtures.json';
-
+import { ED25519_FIXTURE_TIME, RSA_FIXTURE_TIME, tamperSignature } from './support';
 const testData = fixtures as unknown as Record<keyof typeof fixtures, DigitalSignatureSDK.Config>;
-
-// jose checks iat/nbf/exp against `new Date()`, which replacing Date.now does not reach.
-const ED25519_FIXTURE_TIME = 1663459378000;
-const RSA_FIXTURE_TIME = 1664063650000;
 
 describe('test Signature SDK', function () {
 	let clock: sinon.SinonFakeTimers;
@@ -192,7 +188,7 @@ describe('test Signature SDK', function () {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, { ...testData.ED25519, digestAlgorithm });
 
-				should(actual).be.ok();
+				should(actual).be.true();
 			});
 
 			it('should generate a valid signature', async function () {
@@ -235,7 +231,7 @@ describe('test Signature SDK', function () {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519);
 
-				should(actual).be.ok();
+				should(actual).be.true();
 			});
 
 			it('should generate a valid signature for GET requests', async function () {
@@ -270,7 +266,7 @@ describe('test Signature SDK', function () {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519_GET);
 
-				should(actual).be.ok();
+				should(actual).be.true();
 			});
 
 			it('should work when keys are provided in the config', async function () {
@@ -313,7 +309,7 @@ describe('test Signature SDK', function () {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519_CONFIG_KEYS);
 
-				should(actual).be.ok();
+				should(actual).be.true();
 			});
 		}),
 	);
@@ -344,7 +340,7 @@ describe('test Signature SDK', function () {
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.RSA);
 
-			should(actual).be.ok();
+			should(actual).be.true();
 		});
 
 		it('should generate a valid signature', async function () {
@@ -387,7 +383,7 @@ describe('test Signature SDK', function () {
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, config);
 
-			should(actual).be.ok();
+			should(actual).be.true();
 		});
 
 		it('should generate a valid signature for GET requests', async function () {
@@ -417,7 +413,97 @@ describe('test Signature SDK', function () {
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, config);
 
-			should(actual).be.ok();
+			should(actual).be.true();
+		});
+	});
+	describe('validateSignature', function () {
+		const config = { ...testData.ED25519, digestAlgorithm: 'sha256' } as const;
+		let consoleError: sinon.SinonStub;
+
+		beforeEach(function () {
+			consoleError = sinon.stub(console, 'error');
+		});
+
+		afterEach(function () {
+			consoleError.restore();
+		});
+
+		async function signPostRequest(body: Buffer): Promise<Request> {
+			const headers: Record<string, string> = {};
+			const response = { setHeader: (name: string, value: string) => (headers[name] = value) } as unknown as Response;
+			await DigitalSignatureSDK.signMessage({ method: 'POST', headers: {}, body } as unknown as Request, response, config);
+			return { method: 'POST', headers, body } as unknown as Request;
+		}
+
+		it('should accept a request signMessage signed', async function () {
+			const request = await signPostRequest(Buffer.from('{"hello": "world"}'));
+			should(await DigitalSignatureSDK.validateSignature(request, config)).be.true();
+		});
+
+		it('should reject a tampered signature', async function () {
+			const request = await signPostRequest(Buffer.from('{"hello": "world"}'));
+			request.headers.signature = tamperSignature(request.headers.signature as string);
+			should(await DigitalSignatureSDK.validateSignature(request, config)).be.false();
+		});
+
+		it('should reject a body that does not match its Content-Digest', async function () {
+			const request = await signPostRequest(Buffer.from('{"hello": "world"}'));
+			request.body = Buffer.from('{"hello": "World"}');
+			should(await DigitalSignatureSDK.validateSignature(request, config)).be.false();
+			sinon.assert.calledWithMatch(consoleError, sinon.match.has('message', sinon.match(/^Content-Digest value is invalid/)));
+		});
+
+		it('should reject a request with a body but no Content-Digest', async function () {
+			const request = await signPostRequest(Buffer.from('{"hello": "world"}'));
+			delete request.headers['content-digest'];
+			should(await DigitalSignatureSDK.validateSignature(request, config)).be.false();
+		});
+
+		it('should reject a request without a signature', async function () {
+			const request = { method: 'GET', headers: {} } as unknown as Request;
+			should(await DigitalSignatureSDK.validateSignature(request, config)).be.false();
+			sinon.assert.calledWithMatch(consoleError, sinon.match.has('message', 'Signature header is missing'));
+		});
+
+		it('should reject a missing request', async function () {
+			should(await DigitalSignatureSDK.validateSignature(undefined as unknown as Request, config)).be.false();
+		});
+	});
+
+	describe('signMessage', function () {
+		it('should not add a Content-Digest for a request without a body', async function () {
+			const setHeader = sinon.spy();
+			await DigitalSignatureSDK.signMessage(
+				{ method: 'GET', headers: {} } as unknown as Request,
+				{ setHeader } as unknown as Response,
+				testData.ED25519_GET,
+			);
+			sinon.assert.neverCalledWith(setHeader, 'content-digest');
+			sinon.assert.calledWith(
+				setHeader,
+				'signature-input',
+				'sig1=("x-sos-signature-key" "@method" "@path" "@authority");created=1663459378',
+			);
+		});
+
+		it('should use the JWE from the config instead of generating one', async function () {
+			const setHeader = sinon.spy();
+			await DigitalSignatureSDK.signMessage(
+				{ method: 'POST', headers: {}, body: Buffer.from('{}') } as unknown as Request,
+				{ setHeader } as unknown as Response,
+				{ ...testData.ED25519_SIGN, digestAlgorithm: 'sha256' },
+			);
+			sinon.assert.calledWith(setHeader, 'x-sos-signature-key', testData.ED25519_SIGN.jwe);
+		});
+
+		it('should fail when the message cannot be signed', async function () {
+			await should(
+				DigitalSignatureSDK.signMessage(
+					{ method: 'GET', headers: {} } as unknown as Request,
+					{ setHeader: sinon.spy() } as unknown as Response,
+					{ ...testData.ED25519_GET, privateKey: 'not a key' },
+				),
+			).be.rejected();
 		});
 	});
 });
