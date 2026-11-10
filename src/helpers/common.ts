@@ -1,7 +1,5 @@
-'use strict';
-
 import * as fs from 'fs';
-import { constants } from '../constants';
+import { constants } from '../constants.js';
 
 function needsContentDigestValidation(requestBody: string): boolean {
 	return requestBody !== null && requestBody !== undefined && requestBody.length > 0;

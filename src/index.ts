@@ -1,16 +1,15 @@
-'use strict';
-import { constants } from './constants';
+import { constants } from './constants.js';
 import { Request, Response } from 'express';
-import { CryptoAlgorithm, generateDigestHeader, validateDigestHeader } from './helpers/digest-helper';
-import { needsContentDigestValidation } from './helpers/common';
+import { generateDigestHeader, validateDigestHeader } from './helpers/digest-helper.js';
+import { needsContentDigestValidation } from './helpers/common.js';
 import {
 	generateSignature,
 	generateSignatureInput,
 	generateSignatureKey,
 	validateSignatureHeader,
 	getSignatureKeyHeader,
-} from './helpers/signature-helper';
-import { Config } from './types/Config';
+} from './helpers/signature-helper.js';
+import type { Config } from './types/Config.js';
 
 /**
  * Generate signature headers and add it to the response.
@@ -46,7 +45,7 @@ async function signMessage(request: Request, response: Response, config: Config)
 		const signature = generateSignature(generatedHeaders, config);
 		response.setHeader(constants.HEADERS.SIGNATURE, signature);
 	} catch (e) {
-		throw new Error(e);
+		throw new Error(String(e), { cause: e });
 	}
 }
 
@@ -62,7 +61,7 @@ async function validateSignature(request: Request, config: Config): Promise<bool
 
 	try {
 		//Validate
-		if (!request || !request.headers[constants.HEADERS.SIGNATURE]) {
+		if (!request?.headers[constants.HEADERS.SIGNATURE]) {
 			throw new Error('Signature header is missing');
 		}
 
@@ -77,7 +76,6 @@ async function validateSignature(request: Request, config: Config): Promise<bool
 
 		response = isSignatureValid;
 	} catch (e) {
-		// eslint-disable-next-line no-console
 		console.error(e);
 		response = false;
 	}
@@ -94,5 +92,5 @@ export {
 	validateDigestHeader,
 	validateSignature,
 	validateSignatureHeader,
-	Config,
 };
+export type { Config };

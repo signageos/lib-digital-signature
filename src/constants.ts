@@ -1,5 +1,3 @@
-'use strict';
-
 export const constants = {
 	BASE64: 'base64',
 	COLON: ':',
@@ -18,8 +16,6 @@ export const constants = {
 		BAD_REQUEST: 400,
 		INTERNAL_SERVER_ERROR: 500,
 	},
-	KEY_PATTERN_END: /\n-----END PUBLIC KEY-----/,
-	KEY_PATTERN_START: /-----BEGIN PUBLIC KEY-----\n/,
 	KEY_END: '\n-----END PUBLIC KEY-----',
 	KEY_START: '-----BEGIN PUBLIC KEY-----\n',
 	SHA_256: 'sha256',

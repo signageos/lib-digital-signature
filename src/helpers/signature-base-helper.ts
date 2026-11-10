@@ -1,7 +1,5 @@
-'use strict';
-
-import { Config } from '..';
-import { constants } from '../constants';
+import type { Config } from '../types/Config.js';
+import { constants } from '../constants.js';
 
 /**
  * Generates the base string.
@@ -81,7 +79,7 @@ function generateBase(headers: any, config: Config): string {
 
 		return baseString;
 	} catch (e) {
-		throw new Error(`Error calculating signature base: ${e.message}`);
+		throw new Error(`Error calculating signature base: ${(e as Error).message}`, { cause: e });
 	}
 }
 
@@ -97,7 +95,7 @@ function calculateBase(headers: any, config: Config): string {
 	try {
 		const signatureInputHeader: string = headers[constants.HEADERS.SIGNATURE_INPUT] as string;
 
-		if (!signatureInputHeader || signatureInputHeader.length == 0) {
+		if (!signatureInputHeader || signatureInputHeader.length === 0) {
 			throw new Error('Signature-Input header missing');
 		}
 
@@ -109,7 +107,7 @@ function calculateBase(headers: any, config: Config): string {
 			throw new Error("Invalid Signature-Input. Make sure it's of format: .+=\\(.+\\;created=\\d+)");
 		}
 
-		const signatureInput: string = signatureInputParts[2].replace(/"/g, '');
+		const signatureInput: string = (signatureInputParts[2] ?? '').replace(/"/g, '');
 		const signatureParams: string[] = signatureInput.split(' ');
 
 		let baseString: string = '';
@@ -158,7 +156,7 @@ function calculateBase(headers: any, config: Config): string {
 
 		return baseString;
 	} catch (e) {
-		throw new Error(`Error calculating base: ${e.message}`);
+		throw new Error(`Error calculating base: ${(e as Error).message}`, { cause: e });
 	}
 }
 

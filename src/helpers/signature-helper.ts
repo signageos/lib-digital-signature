@@ -1,11 +1,9 @@
-'use strict';
-
 import crypto from 'crypto';
-import { constants } from '../constants';
-import { decryptJWE, encryptJWE } from './jwe-helper';
-import { generateBase, calculateBase, getUnixTimestamp } from './signature-base-helper';
-import { Config } from '..';
-import { readKey, sanitizeKey } from './common';
+import { constants } from '../constants.js';
+import { decryptJWE, encryptJWE } from './jwe-helper.js';
+import { generateBase, calculateBase, getUnixTimestamp } from './signature-base-helper.js';
+import type { Config } from '../types/Config.js';
+import { readKey, sanitizeKey } from './common.js';
 
 // Helper function to get the signature key header name
 const getSignatureKeyHeader = (config: Config): string => config.signatureKeyHeader;
@@ -59,7 +57,7 @@ function generateSignature(headers: any, config: Config): string {
 	// If algorithm is undefined, then it is dependent upon the private key type.
 	const signatureBuffer: any = crypto.sign(undefined, Buffer.from(baseString), privateKey);
 
-	let signature: string = signatureBuffer.toString(constants.BASE64);
+	const signature: string = signatureBuffer.toString(constants.BASE64);
 
 	return constants.SIGNATURE_PREFIX + signature + constants.COLON;
 }
@@ -77,7 +75,7 @@ function validateSignatureKey(signatureKey: string, config: Config): Promise<str
 	try {
 		return decryptJWE(signatureKey, config);
 	} catch (e) {
-		throw new Error(`Error parsing JWE from ${signatureKeyHeader} header: ${e.message}`);
+		throw new Error(`Error parsing JWE from ${signatureKeyHeader} header: ${(e as Error).message}`, { cause: e });
 	}
 }
 
@@ -110,7 +108,7 @@ async function validateSignatureHeader(headers: any, config: Config): Promise<bo
 	}
 
 	// Base64 decode
-	const signatureBuffer: Buffer = Buffer.from(signatureParts[1], constants.BASE64);
+	const signatureBuffer: Buffer = Buffer.from(signatureParts[1] ?? '', constants.BASE64);
 
 	// Verify JWT
 	const publicKey: any = await validateSignatureKey(signatureKey, config);

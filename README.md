@@ -66,8 +66,7 @@ This SDK incorporates
 **Prerequisites**
 
 ```
-NodeJS: v16 or higher
-NPM: v7 or higher
+Node.js: v20 or higher
 ```
 
 ### Install
@@ -140,16 +139,8 @@ Note: You can refer to [example.js](examples/example.ts) for an example of how t
 
 ### Running the example
 
-Using npm:
-
 ```shell
-npm start
-```
-
-Using yarn:
-
-```shell
-yarn start
+pnpm start
 ```
 
 - Signing Configuration Sample (JWE is provided in the config): [example-config.json](examples/example-config.json).

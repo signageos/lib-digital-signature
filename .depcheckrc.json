@@ -1,0 +1,10 @@
+{
+	"specials": ["mocha"],
+	"parsers": {
+		"**/*.ts": "typescript",
+		"**/*.js": "es6"
+	},
+	"detectors": ["requireCallExpression", "importDeclaration"],
+	"ignore-dirs": ["lib"],
+	"ignores": ["@signageos/codestyle", "@types/*", "c8", "mocha", "tsx", "typescript"]
+}

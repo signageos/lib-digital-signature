@@ -1,7 +1,5 @@
-'use strict';
-
 import crypto from 'crypto';
-import { constants } from '../constants';
+import { constants } from '../constants.js';
 
 /**
  * Keys are in the format of algorithm used to calculate the digest (crypto package).
@@ -77,10 +75,10 @@ function validateDigestHeader(contentDigestHeader: string, body: Buffer): void {
 	// Validate
 	const contentDigestPattern = new RegExp('(.+)=:(.+):');
 	const contentDigestParts = contentDigestPattern.exec(contentDigestHeader);
-	if (!contentDigestParts || contentDigestParts.length == 0) {
+	if (!contentDigestParts || contentDigestParts.length === 0) {
 		throw new Error('Content-digest header invalid');
 	}
-	const cipher: string = contentDigestParts[1];
+	const cipher: string = contentDigestParts[1] ?? '';
 
 	if (!isValidDashedAlgo(cipher)) {
 		throw new Error('Invalid cipher ' + cipher);

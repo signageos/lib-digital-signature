@@ -1,13 +1,1 @@
-# General
-node_modules/*
-lib/*
-coverage/*
-
-.env
-.env.docker-compose
-CHANGELOG.md
-jest.config.js
-
-# IDE
-.idea
-.vscode
+pnpm-lock.yaml

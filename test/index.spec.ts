@@ -1,59 +1,58 @@
-'use strict';
-
 import { Response, Request } from 'express';
 import { jwtDecrypt } from 'jose';
+import should from 'should';
+import sinon from 'sinon';
 import { constants } from '../src/constants';
 import { readKey } from '../src/helpers/common';
 import * as DigitalSignatureSDK from '../src/index';
+import fixtures from './fixtures.json';
 
-const testData = require('./test.json');
+const testData = fixtures as unknown as Record<keyof typeof fixtures, DigitalSignatureSDK.Config>;
 
 // jose checks iat/nbf/exp against `new Date()`, which replacing Date.now does not reach.
 const ED25519_FIXTURE_TIME = 1663459378000;
 const RSA_FIXTURE_TIME = 1664063650000;
 
-describe('test Signature SDK', () => {
-	beforeAll(() => {
-		jest.useFakeTimers('modern');
+describe('test Signature SDK', function () {
+	let clock: sinon.SinonFakeTimers;
+
+	beforeEach(function () {
+		clock = sinon.useFakeTimers({ now: ED25519_FIXTURE_TIME, toFake: ['Date'] });
 	});
 
-	beforeEach(() => {
-		jest.setSystemTime(ED25519_FIXTURE_TIME);
+	afterEach(function () {
+		clock.restore();
 	});
 
-	afterAll(() => {
-		jest.useRealTimers();
-	});
-
-	describe('Content-Digest', () => {
-		test('should be able to generate for SHA256 cipher', () => {
+	describe('Content-Digest', function () {
+		it('should be able to generate for SHA256 cipher', function () {
 			const request: string = '{"hello": "world"}';
 			const requestBuffer: Buffer = Buffer.from(request);
 			const expected: string = 'sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:';
 
 			const actual = DigitalSignatureSDK.generateDigestHeader(requestBuffer, constants.SHA_256);
 
-			expect(actual).toBe(expected);
+			should(actual).equal(expected);
 		});
 
-		test('should be able to generate for SHA512 cipher', () => {
+		it('should be able to generate for SHA512 cipher', function () {
 			const request: string = '{"hello": "world"}';
 			const requestBuffer: Buffer = Buffer.from(request);
 			const expected: string = 'sha-512=:WZDPaVn/7XgHaAy8pmojAkGWoRx2UFChF41A2svX+TaPm+AbwAgBWnrIiYllu7BNNyealdVLvRwEmTHWXvJwew==:';
 
 			const actual = DigitalSignatureSDK.generateDigestHeader(requestBuffer, constants.SHA_512);
 
-			expect(actual).toBe(expected);
+			should(actual).equal(expected);
 		});
 
-		test('should be able to generate for MD5 cipher', () => {
+		it('should be able to generate for MD5 cipher', function () {
 			const request: string = '{"hello": "world"}';
 			const requestBuffer: Buffer = Buffer.from(request);
 			const expected: string = `md5=:Sd/dVLAcvNLSq16eXua5uQ==:`;
 
 			const actual = DigitalSignatureSDK.generateDigestHeader(requestBuffer, constants.MD5);
 
-			expect(actual).toBe(expected);
+			should(actual).equal(expected);
 		});
 	});
 
@@ -70,29 +69,29 @@ describe('test Signature SDK', () => {
 			testDigest: 'Sd/dVLAcvNLSq16eXua5uQ==',
 			expectedSignature: 'SQLay/Qy9QqiExbSY9Qtjj37H6T7hlf+Xf9Q8oIk0z+sDYCnQwed8mB9uKq1AXDkJd3AJhtjq6l9HO2ZvgqGAA==',
 		},
-	];
+	] as const;
 
 	testCases.forEach(({ digestAlgorithm, digestAlgo, testDigest, expectedSignature }) =>
-		describe(`ED25519 - ${digestAlgorithm}`, () => {
-			test("should be able to generate 'signature-input' header when request has payload", () => {
+		describe(`ED25519 - ${digestAlgorithm}`, function () {
+			it("should be able to generate 'signature-input' header when request has payload", function () {
 				const config: DigitalSignatureSDK.Config = testData.ED25519;
 				const expected: string = `sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378`;
 
 				const actual = DigitalSignatureSDK.generateSignatureInput({ 'content-digest': 'test' }, config);
 
-				expect(actual).toBe(expected);
+				should(actual).equal(expected);
 			});
 
-			test("should be able to generate 'signature-input' header when request has no payload", () => {
+			it("should be able to generate 'signature-input' header when request has no payload", function () {
 				const config: DigitalSignatureSDK.Config = testData.ED25519_GET;
 				const expected: string = `sig1=("x-sos-signature-key" "@method" "@path" "@authority");created=1663459378`;
 
 				const actual = DigitalSignatureSDK.generateSignatureInput({ 'content-digest': 'test' }, config);
 
-				expect(actual).toBe(expected);
+				should(actual).equal(expected);
 			});
 
-			test("should be able to generate 'Signature' header", () => {
+			it("should be able to generate 'Signature' header", function () {
 				const config: DigitalSignatureSDK.Config = testData.ED25519;
 				const expected = 'sig1=:' + expectedSignature + ':';
 
@@ -106,10 +105,10 @@ describe('test Signature SDK', () => {
 					config,
 				);
 
-				expect(actual).toBe(expected);
+				should(actual).equal(expected);
 			});
 
-			test("should be able to generate 'Signature' header with given JWE", () => {
+			it("should be able to generate 'Signature' header with given JWE", function () {
 				const config: DigitalSignatureSDK.Config = testData.ED25519_SIGN;
 				const expected = 'sig1=:' + expectedSignature + ':';
 
@@ -123,25 +122,25 @@ describe('test Signature SDK', () => {
 					config,
 				);
 
-				expect(actual).toBe(expected);
+				should(actual).equal(expected);
 			});
 
-			test("should be able to generate 'x-sos-signature-key' header", async () => {
+			it("should be able to generate 'x-sos-signature-key' header", async function () {
 				const actual = await DigitalSignatureSDK.generateSignatureKey(testData.ED25519);
 
 				const masterKey: string = readKey(testData.ED25519.masterKey);
 				const masterKeyBuffer: Buffer = Buffer.from(masterKey, constants.BASE64);
 				const jwtDecryptResult: any = await jwtDecrypt(actual, masterKeyBuffer);
 
-				expect(jwtDecryptResult.payload.iat).toBe(1663459378);
-				expect(jwtDecryptResult.payload.nbf).toBe(1663459378);
-				expect(jwtDecryptResult.payload.pkey).toBe('MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=');
-				expect(jwtDecryptResult.protectedHeader.alg).toBe('A256GCMKW');
-				expect(jwtDecryptResult.protectedHeader.enc).toBe('A256GCM');
-				expect(jwtDecryptResult.protectedHeader.zip).toBe('DEF');
+				should(jwtDecryptResult.payload.iat).equal(1663459378);
+				should(jwtDecryptResult.payload.nbf).equal(1663459378);
+				should(jwtDecryptResult.payload.pkey).equal('MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=');
+				should(jwtDecryptResult.protectedHeader.alg).equal('A256GCMKW');
+				should(jwtDecryptResult.protectedHeader.enc).equal('A256GCM');
+				should(jwtDecryptResult.protectedHeader.zip).equal('DEF');
 			});
 
-			test('should be able to sign a request', async () => {
+			it('should be able to sign a request', async function () {
 				const payload: string = '{"hello": "world"}';
 				const payloadBuffer: Buffer = Buffer.from(payload);
 				const mockedRequest = {
@@ -154,7 +153,7 @@ describe('test Signature SDK', () => {
 				} as unknown as Request;
 
 				const mockedResponse = {
-					setHeader: jest.fn(),
+					setHeader: sinon.spy(),
 				} as unknown as Response;
 
 				await DigitalSignatureSDK.signMessage(mockedRequest, mockedResponse, {
@@ -162,17 +161,18 @@ describe('test Signature SDK', () => {
 					digestAlgorithm,
 				});
 
-				const signatureSpy = jest.spyOn(mockedResponse, 'setHeader');
-				expect(signatureSpy).toHaveBeenCalledWith('content-digest', digestAlgo + '=:' + testDigest + ':');
-				expect(signatureSpy).toHaveBeenCalledWith(
+				const signatureSpy = mockedResponse.setHeader as sinon.SinonSpy;
+				sinon.assert.calledWith(signatureSpy, 'content-digest', digestAlgo + '=:' + testDigest + ':');
+				sinon.assert.calledWith(
+					signatureSpy,
 					'signature-input',
 					'sig1=("content-digest" "x-sos-signature-key" "@method" "@path" "@authority");created=1663459378',
 				);
-				expect(signatureSpy).toHaveBeenCalledWith('signature', expect.any(String));
-				expect(signatureSpy).toHaveBeenCalledWith('x-sos-signature-key', expect.any(String));
+				sinon.assert.calledWith(signatureSpy, 'signature', sinon.match.string);
+				sinon.assert.calledWith(signatureSpy, 'x-sos-signature-key', sinon.match.string);
 			});
 
-			test('should be able to validate request signature', async () => {
+			it('should be able to validate request signature', async function () {
 				const payload: string = '{"hello": "world"}';
 				const payloadBuffer: Buffer = Buffer.from(payload);
 				const request = {
@@ -192,10 +192,10 @@ describe('test Signature SDK', () => {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, { ...testData.ED25519, digestAlgorithm });
 
-				expect(actual).toBeTruthy();
+				should(actual).be.ok();
 			});
 
-			test('should generate a valid signature', async () => {
+			it('should generate a valid signature', async function () {
 				const payload: string = '{"hello": "world"}';
 				const payloadBuffer: Buffer = Buffer.from(payload);
 				const config: DigitalSignatureSDK.Config = {
@@ -235,10 +235,10 @@ describe('test Signature SDK', () => {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519);
 
-				expect(actual).toBeTruthy();
+				should(actual).be.ok();
 			});
 
-			test('should generate a valid signature for GET requests', async () => {
+			it('should generate a valid signature for GET requests', async function () {
 				const config: DigitalSignatureSDK.Config = testData.ED25519_GET;
 
 				const signatureInput = DigitalSignatureSDK.generateSignatureInput(
@@ -270,10 +270,10 @@ describe('test Signature SDK', () => {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519_GET);
 
-				expect(actual).toBeTruthy();
+				should(actual).be.ok();
 			});
 
-			test('should work when keys are provided in the config', async () => {
+			it('should work when keys are provided in the config', async function () {
 				const payload: string = '{"hello": "world"}';
 				const payloadBuffer: Buffer = Buffer.from(payload);
 				const config: DigitalSignatureSDK.Config = {
@@ -313,17 +313,17 @@ describe('test Signature SDK', () => {
 
 				const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.ED25519_CONFIG_KEYS);
 
-				expect(actual).toBeTruthy();
+				should(actual).be.ok();
 			});
 		}),
 	);
 
-	describe('RSA', () => {
-		beforeEach(() => {
-			jest.setSystemTime(RSA_FIXTURE_TIME);
+	describe('RSA', function () {
+		beforeEach(function () {
+			clock.setSystemTime(RSA_FIXTURE_TIME);
 		});
 
-		test('should be able to validate request signature', async () => {
+		it('should be able to validate request signature', async function () {
 			const payload: string = '{"hello": "world"}';
 			const payloadBuffer: Buffer = Buffer.from(payload);
 			const request = {
@@ -344,10 +344,10 @@ describe('test Signature SDK', () => {
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, testData.RSA);
 
-			expect(actual).toBeTruthy();
+			should(actual).be.ok();
 		});
 
-		test('should generate a valid signature', async () => {
+		it('should generate a valid signature', async function () {
 			const payload: string = '{"hello": "world"}';
 			const payloadBuffer: Buffer = Buffer.from(payload);
 			const config: DigitalSignatureSDK.Config = {
@@ -386,9 +386,11 @@ describe('test Signature SDK', () => {
 			} as unknown as Request;
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, config);
+
+			should(actual).be.ok();
 		});
 
-		test('should generate a valid signature for GET requests', async () => {
+		it('should generate a valid signature for GET requests', async function () {
 			const config: DigitalSignatureSDK.Config = testData.RSA_GET;
 
 			const signatureInput = DigitalSignatureSDK.generateSignatureInput({}, config);
@@ -414,6 +416,8 @@ describe('test Signature SDK', () => {
 			} as unknown as Request;
 
 			const actual: boolean = await DigitalSignatureSDK.validateSignature(request, config);
+
+			should(actual).be.ok();
 		});
 	});
 });

@@ -1,7 +1,5 @@
-'use strict';
-
-import { CryptoAlgorithm } from '../helpers/digest-helper';
-import { SignatureComponents } from './SignatureComponents';
+import type { CryptoAlgorithm } from '../helpers/digest-helper.js';
+import type { SignatureComponents } from './SignatureComponents.js';
 
 export interface Config {
 	digestAlgorithm: CryptoAlgorithm;

@@ -1,5 +1,3 @@
-'use strict';
-
 export interface SignatureComponents {
 	authority: string;
 	method: string;

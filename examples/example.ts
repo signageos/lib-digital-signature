@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-/* eslint-disable max-len */
+
 'use strict';
 
-import bodyParser from 'body-parser';
 import { constants } from '../src/constants';
 import express, { Request, Response } from 'express';
 import * as DigitalSignatureSDK from '../src/index';
@@ -21,7 +20,7 @@ const options = {
 	type: 'application/*',
 };
 
-app.use(bodyParser.raw(options));
+app.use(express.raw(options));
 
 /**
  * This endpoint uses `example-config.json` with `signMessage()` to sign the incoming request.
@@ -71,7 +70,7 @@ app.post('/sign', async (req: Request, res: Response) => {
  */
 app.post('/validate-request', async (req: Request, res: Response) => {
 	try {
-		let response: boolean = await DigitalSignatureSDK.validateSignature(req, configFull);
+		const response: boolean = await DigitalSignatureSDK.validateSignature(req, configFull);
 
 		if (true === response) {
 			res.status(constants.HTTP_STATUS_CODE.OK).send();
@@ -97,7 +96,7 @@ app.post('/validate', async (req: Request, res: Response) => {
 		}
 
 		// Validate signature header
-		let response: boolean = await DigitalSignatureSDK.validateSignatureHeader(req.headers, configFull);
+		const response: boolean = await DigitalSignatureSDK.validateSignatureHeader(req.headers, configFull);
 
 		if (true === response) {
 			res.status(constants.HTTP_STATUS_CODE.OK).send();
@@ -112,6 +111,5 @@ app.post('/validate', async (req: Request, res: Response) => {
 });
 
 app.listen(PORT, () => {
-	// eslint-disable-next-line no-console
 	console.log(`Listening at http://localhost:${PORT}`);
 });

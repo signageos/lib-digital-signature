@@ -1,10 +1,8 @@
-'use strict';
-
 import { CompactJWEHeaderParameters, EncryptJWT, jwtDecrypt, JWTPayload } from 'jose';
-import { Config } from '..';
-import { constants } from '../constants';
-import { readKey } from './common';
-import { getUnixTimestamp } from './signature-base-helper';
+import type { Config } from '../types/Config.js';
+import { constants } from '../constants.js';
+import { readKey } from './common.js';
+import { getUnixTimestamp } from './signature-base-helper.js';
 
 /**
  * Decrypts the input JWE string and returns the 'pkey' value from claims set.
@@ -19,8 +17,8 @@ export async function decryptJWE(jweString: string, config: Config): Promise<str
 	const masterKeyBuffer: Buffer = Buffer.from(masterKey, constants.BASE64);
 	const jwtDecryptResult: any = await jwtDecrypt(jweString, masterKeyBuffer);
 
-	if (jwtDecryptResult['payload'] && jwtDecryptResult['payload']['pkey']) {
-		const pKey = jwtDecryptResult['payload']['pkey'];
+	if (jwtDecryptResult.payload?.pkey) {
+		const pKey = jwtDecryptResult.payload.pkey;
 		return constants.KEY_START + pKey + constants.KEY_END;
 	}
 }
@@ -34,9 +32,6 @@ export async function decryptJWE(jweString: string, config: Config): Promise<str
 export async function encryptJWE(config: Config): Promise<string> {
 	const masterKey: string = readKey(config.masterKey);
 
-	let publicKey = readKey(config.publicKey);
-	publicKey = formatPublicKey(publicKey);
-
 	const unixTimestamp = getUnixTimestamp();
 	const masterKeyBuffer: Buffer = Buffer.from(masterKey, constants.BASE64);
 
@@ -48,19 +43,4 @@ export async function encryptJWE(config: Config): Promise<string> {
 		.encrypt(masterKeyBuffer);
 
 	return jwe;
-}
-
-/**
- * Removes beginning and end markers from the input public key.
- *
- * @param {string} key The public key.
- * @throws {Error} if the key format is invalid.
- */
-function formatPublicKey(key: string): string {
-	try {
-		const updatedKey = key.replace(constants.KEY_PATTERN_START, '');
-		return updatedKey.replace(constants.KEY_PATTERN_END, '');
-	} catch (exception) {
-		throw new Error(`Invalid public key format`);
-	}
 }

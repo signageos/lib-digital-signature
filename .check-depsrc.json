@@ -1,0 +1,7 @@
+{
+	"ignores": ["tsx"],
+	"expectRanges": {
+		"@types/express": "^",
+		"jose": "^"
+	}
+}

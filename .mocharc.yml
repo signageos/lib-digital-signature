@@ -1,0 +1,6 @@
+timeout: 5e3
+require:
+  - tsx/cjs
+spec:
+  - 'test/**/*.spec.ts'
+exit: true

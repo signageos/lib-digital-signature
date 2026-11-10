@@ -1,0 +1,13 @@
+{
+	"extends": "@istanbuljs/nyc-config-typescript",
+	"check-coverage": false,
+	"all": true,
+	"include": ["src/**/!(*.test.*).[tj]s?(x)"],
+	"exclude": ["test/**/*.*"],
+	"statements": "80",
+	"branches": "80",
+	"functions": "80",
+	"lines": "80",
+	"reporter": ["html", "cobertura", "text-summary"],
+	"report-dir": "coverage"
+}

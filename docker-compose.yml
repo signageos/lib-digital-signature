@@ -2,10 +2,13 @@ services:
   app:
     build:
       context: .
+      dockerfile: Dockerfile
+      cache_from: ['172396373649.dkr.ecr.eu-central-1.amazonaws.com/signageos/lib/digital-signature/runtime:latest']
       target: dev
+      tags: ['172396373649.dkr.ecr.eu-central-1.amazonaws.com/signageos/lib/digital-signature/runtime:latest']
     volumes:
       - .:/app
-    command: tail -f /dev/null
     working_dir: /app
     env_file:
       - ~/.signageos/npm.env
+    command: tail -f /dev/null
