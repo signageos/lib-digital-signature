@@ -11,13 +11,9 @@ import { constants } from '../constants.js';
 function generateBase(headers: any, config: Config): string {
 	try {
 		let baseString: string = '';
-		const signatureParams: Array<string> = config.signatureParams;
+		const signatureParams = getCoveredParams(headers, config);
 
 		signatureParams.forEach((header) => {
-			if (header === constants.HEADERS.CONTENT_DIGEST && !headers[constants.HEADERS.CONTENT_DIGEST]) {
-				return;
-			}
-
 			baseString += '"';
 			baseString += header.toLowerCase();
 			baseString += '": ';
@@ -161,6 +157,13 @@ function calculateBase(headers: any, config: Config): string {
 }
 
 /**
+ * The configured components the message actually carries: Content-Digest is covered only when present.
+ */
+function getCoveredParams(headers: any, config: Config): string[] {
+	return config.signatureParams.filter((param) => param !== constants.HEADERS.CONTENT_DIGEST || headers[constants.HEADERS.CONTENT_DIGEST]);
+}
+
+/**
  * Returns the current UNIX timestamp.
  *
  * @returns {number} The unix timestamp.
@@ -169,4 +172,4 @@ function getUnixTimestamp(): number {
 	return Math.floor(Date.now() / 1000);
 }
 
-export { calculateBase, generateBase, getUnixTimestamp };
+export { calculateBase, generateBase, getCoveredParams, getUnixTimestamp };

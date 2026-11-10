@@ -471,6 +471,32 @@ describe('test Signature SDK', function () {
 	});
 
 	describe('signMessage', function () {
+		async function signAndValidate(request: Request, config: DigitalSignatureSDK.Config, onSignatureInput?: () => void): Promise<boolean> {
+			const headers: Record<string, string> = {};
+			const response = {
+				setHeader: (name: string, value: string) => {
+					headers[name] = value;
+					if (name === 'signature-input') {
+						onSignatureInput?.();
+					}
+				},
+			} as unknown as Response;
+			await DigitalSignatureSDK.signMessage(request, response, config);
+			return DigitalSignatureSDK.validateSignature({ ...request, headers } as unknown as Request, config);
+		}
+
+		it('should sign a request without a body when the config covers content-digest', async function () {
+			const request = { method: 'POST', headers: {} } as unknown as Request;
+			should(await signAndValidate(request, { ...testData.ED25519, digestAlgorithm: 'sha256' })).be.true();
+		});
+
+		it('should sign the created time it sends when signing crosses a second boundary', async function () {
+			clock.setSystemTime(ED25519_FIXTURE_TIME + 900);
+			const request = { method: 'POST', headers: {}, body: Buffer.from('{"hello": "world"}') } as unknown as Request;
+			const config = { ...testData.ED25519, digestAlgorithm: 'sha256' } as const;
+			should(await signAndValidate(request, config, () => clock.tick(200))).be.true();
+		});
+
 		it('should not add a Content-Digest for a request without a body', async function () {
 			const setHeader = sinon.spy();
 			await DigitalSignatureSDK.signMessage(

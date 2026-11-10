@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { constants } from '../constants.js';
 import { decryptJWE, encryptJWE } from './jwe-helper.js';
-import { generateBase, calculateBase, getUnixTimestamp } from './signature-base-helper.js';
+import { generateBase, calculateBase, getCoveredParams, getUnixTimestamp } from './signature-base-helper.js';
 import type { Config } from '../types/Config.js';
 import { readKey, sanitizeKey } from './common.js';
 
@@ -30,11 +30,7 @@ function generateSignatureInput(headers: any, config: Config): string {
 	const unixTimestamp = getUnixTimestamp();
 	let signatureInput: string = `sig1=(`;
 
-	config.signatureParams.forEach((param) => {
-		if (param === constants.HEADERS.CONTENT_DIGEST && !headers[constants.HEADERS.CONTENT_DIGEST]) {
-			return;
-		}
-
+	getCoveredParams(headers, config).forEach((param) => {
 		signatureInput += `"${param}" `;
 	});
 
@@ -51,7 +47,8 @@ function generateSignatureInput(headers: any, config: Config): string {
  * @returns {string} the signature header value.
  */
 function generateSignature(headers: any, config: Config): string {
-	const baseString = generateBase(headers, config);
+	// Sign what Signature-Input declares; reading the clock again can cross a second boundary.
+	const baseString = headers[constants.HEADERS.SIGNATURE_INPUT] ? calculateBase(headers, config) : generateBase(headers, config);
 	const privateKey = readKey(config.privateKey);
 
 	// If algorithm is undefined, then it is dependent upon the private key type.

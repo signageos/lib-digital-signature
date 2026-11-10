@@ -32,6 +32,7 @@ async function signMessage(request: Request, response: Response, config: Config)
 
 		const signatureInput = generateSignatureInput(generatedHeaders, config);
 		response.setHeader(constants.HEADERS.SIGNATURE_INPUT, signatureInput);
+		generatedHeaders[constants.HEADERS.SIGNATURE_INPUT] = signatureInput;
 
 		// If JWE is not provided in the config, we generate it.
 		let signatureKey: string = config.jwe;

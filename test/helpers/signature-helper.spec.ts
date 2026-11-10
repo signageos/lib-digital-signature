@@ -115,6 +115,32 @@ describe('helpers/signature-helper', function () {
 	});
 
 	describe('generateSignature', function () {
+		it('should reproduce the RFC 9421 B.2.6 ed25519 signature from its Signature-Input', function () {
+			const config = createConfig({
+				privateKey: TEST_KEY_ED25519_PRIVATE,
+				signatureComponents: createComponents(B26.components),
+				signatureParams: ['@method'],
+			});
+			const signature = generateSignature(B26.headers, config);
+			should(signature.replace(/^sig1=/, 'sig-b26=')).equal(B26.headers.signature);
+		});
+
+		it('should sign the created time of the Signature-Input header, not the clock', async function () {
+			const config = createConfig({
+				jwtPayload: { pkey: toPkeyClaim(TEST_KEY_ED25519_PUBLIC) },
+				privateKey: TEST_KEY_ED25519_PRIVATE,
+				signatureParams: [SIGNATURE_KEY_HEADER, '@method', '@path'],
+			});
+			clock.setSystemTime(ED25519_FIXTURE_TIME + 900);
+			const headers: Record<string, string> = { [SIGNATURE_KEY_HEADER]: await encryptJWE(config) };
+			headers['signature-input'] = generateSignatureInput(headers, config);
+
+			clock.setSystemTime(ED25519_FIXTURE_TIME + 1100);
+			headers.signature = generateSignature(headers, config);
+
+			should(await validateSignatureHeader(headers, config)).be.true();
+		});
+
 		it('should sign with the configured private key', function () {
 			const config = createConfig({ privateKey: TEST_KEY_ED25519_PRIVATE, signatureParams: ['@method', '@path'] });
 			const signature = generateSignature({}, config);
