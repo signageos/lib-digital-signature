@@ -1,0 +1,8 @@
+publicHoistPattern:
+  - eslint
+  - prettier
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@signageos/*'
+  - tsx@4.23.16-sos-fix-coverage.0
