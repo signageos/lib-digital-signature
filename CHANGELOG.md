@@ -10,6 +10,11 @@ Entries should be short and human-readable; for longer entries, use an indented 
 
 ## [Unreleased]
 
+## [3.2.1] - 2026-11-11
+### Fixed
+- The ES module build now loads natively in Node.js.
+- (public) Signed messages, including requests without a body, are no longer intermittently rejected by the verifier.
+
 ## [3.2.0] - 2025-06-19
 ### Added
 - Initial release of the `digital-signature` library.
