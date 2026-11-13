@@ -46,7 +46,7 @@
 		"express": "4.22.3",
 		"mocha": "11.7.5",
 		"should": "13.2.3",
-		"sinon": "21.0.0",
+		"sinon": "21.1.2",
 		"tsx": "4.23.16-sos-fix-coverage.0",
 		"typescript": "6.0.3"
 	},
